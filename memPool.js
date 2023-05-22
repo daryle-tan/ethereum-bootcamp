@@ -14,7 +14,9 @@ function addTransaction(transaction) {
 function mine() {
   // TODO: mine a block
   const newBlock = { id: blocks.length }
-  blocks.push(newBlock)
+
+  const hash = SHA256(JSON.stringify(newBlock))
+  blocks.push({ newBlock, hash })
 }
 
 module.exports = {
