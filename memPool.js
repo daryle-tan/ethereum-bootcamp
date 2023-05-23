@@ -13,10 +13,25 @@ function addTransaction(transaction) {
 
 function mine() {
   // TODO: mine a block
-  const newBlock = { id: blocks.length }
+  let transactions = []
+  while (transactions.length < MAX_TRANSACTIONS && mempool.length > 0) {
+    transactions.push(mempool.pop())
+  }
 
-  const hash = SHA256(JSON.stringify(newBlock))
-  blocks.push({ newBlock, hash })
+  const newBlock = {
+    id: blocks.length,
+    transactions,
+  }
+  newBlock.nonce = 0
+  let hash
+  while (true) {
+    hash = SHA256(JSON.stringify(newBlock)).toString()
+    if (BigInt(`0x${hash}`) < TARGET_DIFFICULTY) {
+      break
+    }
+    newBlock.nonce++
+  }
+  blocks.push({ ...newBlock, hash })
 }
 
 module.exports = {
