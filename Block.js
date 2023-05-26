@@ -5,7 +5,7 @@ class Block {
     this.data = data
   }
   toHash() {
-    const hash = SHA256(this.data)
+    const hash = SHA256(this.data + this.previousHash)
     return hash // a hash!
   }
 }
