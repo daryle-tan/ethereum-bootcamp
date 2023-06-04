@@ -2,9 +2,11 @@ const { keccak256 } = require("ethereum-cryptography/keccak")
 const { utf8ToBytes } = require("ethereum-cryptography/utils")
 
 function hashMessage(message) {
-  const bytes = utf8ToBytes(message)
-  const hash = keccak256(bytes)
-
+  // convert the string message into an array of binary data
+  const arrBytes = utf8ToBytes(message)
+  // convert that array into a keccak256 hash
+  const hash = keccak256(arrBytes)
+  // return the hash
   return hash
 }
 
