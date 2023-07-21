@@ -37,7 +37,17 @@ contract MultiSig {
         return numberOfConfirmations;
     }
 
+    function isOwner(address owner) public view returns (bool) {
+        for (uint i = 0; i < owners.length; i++) {
+            if (msg.sender == owners[i]) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     function confirmTransaction(uint transactionId) public {
+        require(isOwner(msg.sender), "Must be an owner!");
         confirmations[transactionId][msg.sender] = true;
     }
 
