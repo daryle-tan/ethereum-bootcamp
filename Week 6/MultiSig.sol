@@ -23,6 +23,13 @@ contract MultiSig {
         required = _confirmations;
     }
 
+    function submitTransaction(address destination, uint value) external {
+        // add transaction and add to storage
+        uint id = addTransaction(destination, value);
+        // confirm it
+        confirmTransaction(id);
+    }
+
     function getConfirmationsCount(uint transactionId)
         public
         view
@@ -52,7 +59,7 @@ contract MultiSig {
     }
 
     function addTransaction(address destination, uint value)
-        public
+        internal
         returns (uint transactionId)
     {
         transactionId = transactionCount;
