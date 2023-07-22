@@ -10,6 +10,7 @@ contract MultiSig {
         address destination;
         uint value;
         bool executed;
+        bytes data;
     }
 
     mapping(uint => Transaction) public transactions;
@@ -26,7 +27,7 @@ contract MultiSig {
     function executeTransaction(uint transactionId) public payable {
         require(isConfirmed(transactionId), "Transaction not confirmed");
         Transaction storage _tx = transactions[transactionId];
-        (bool s, ) = _tx.destination.call{value: _tx.value}("");
+        (bool s, ) = _tx.destination.call{value: _tx.value}(_tx.data);
         require(s);
         _tx.executed = true;
     }
@@ -38,9 +39,13 @@ contract MultiSig {
         return false;
     }
 
-    function submitTransaction(address destination, uint value) external {
+    function submitTransaction(
+        address destination,
+        uint value,
+        bytes calldata data
+    ) external {
         // add transaction and add to storage
-        uint id = addTransaction(destination, value);
+        uint id = addTransaction(destination, value, data);
         // confirm it
         confirmTransaction(id);
     }
@@ -76,12 +81,18 @@ contract MultiSig {
         }
     }
 
-    function addTransaction(address destination, uint value)
-        internal
-        returns (uint transactionId)
-    {
+    function addTransaction(
+        address destination,
+        uint value,
+        bytes calldata data
+    ) internal returns (uint transactionId) {
         transactionId = transactionCount;
-        transactions[transactionCount] = Transaction(destination, value, false);
+        transactions[transactionCount] = Transaction(
+            destination,
+            value,
+            false,
+            data
+        );
         transactionCount += 1;
         return transactionId;
     }
