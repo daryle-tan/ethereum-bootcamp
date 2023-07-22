@@ -71,6 +71,9 @@ contract MultiSig {
     function confirmTransaction(uint transactionId) public {
         require(isOwner(msg.sender), "Must be an owner!");
         confirmations[transactionId][msg.sender] = true;
+        if (isConfirmed(transactionId)) {
+            executeTransaction(transactionId);
+        }
     }
 
     function addTransaction(address destination, uint value)
