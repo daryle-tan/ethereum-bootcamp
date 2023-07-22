@@ -23,6 +23,13 @@ contract MultiSig {
         required = _confirmations;
     }
 
+    function isConfirmed(uint transactionId) public view returns (bool) {
+        if (getConfirmationsCount(transactionId) >= required) {
+            return true;
+        }
+        return false;
+    }
+
     function submitTransaction(address destination, uint value) external {
         // add transaction and add to storage
         uint id = addTransaction(destination, value);
