@@ -67,4 +67,6 @@ contract MultiSig {
         transactionCount += 1;
         return transactionId;
     }
+
+    receive() external payable {}
 }
