@@ -23,6 +23,14 @@ contract MultiSig {
         required = _confirmations;
     }
 
+    function executeTransaction(uint transactionId) public payable {
+        require(isConfirmed(transactionId), "Transaction not confirmed");
+        Transaction storage _tx = transactions[transactionId];
+        (bool s, ) = _tx.destination.call{value: _tx.value}("");
+        require(s);
+        _tx.executed = true;
+    }
+
     function isConfirmed(uint transactionId) public view returns (bool) {
         if (getConfirmationsCount(transactionId) >= required) {
             return true;
