@@ -7,4 +7,12 @@ contract Contract {
     constructor(uint _x) {
         x = _x;
     }
+
+    function increment() external {
+        x += 1;
+    }
+
+    function add(uint num) external view returns (uint) {
+        return num += x;
+    }
 }
