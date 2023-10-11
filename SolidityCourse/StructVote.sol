@@ -7,18 +7,39 @@ contract Contract {
         No
     }
 
-    // TODO: create a vote struct and a public state variable
     struct Vote {
         Choices choice;
         address voter;
     }
 
-    Vote public vote;
+    Vote none = Vote(Choices(0), address(0));
+
+    Vote[] public votes;
 
     function createVote(Choices choice) external {
-        // TODO: create a new vote
-        Vote memory votes = Vote(choice, msg.sender);
+        require(!hasVoted(msg.sender));
+        votes.push(Vote(choice, msg.sender));
+    }
 
-        vote = votes;
+    function findVote(address voter) internal view returns (Vote storage) {
+        for (uint i = 0; i < votes.length; i++) {
+            if (votes[i].voter == voter) {
+                return votes[i];
+            }
+        }
+        return none;
+    }
+
+    function hasVoted(address voter) public view returns (bool) {
+        return findVote(voter).voter == voter;
+    }
+
+    function findChoice(address person) external view returns (Choices) {
+        return findVote(person).choice;
+    }
+
+    function changeVote(Choices _choice) external {
+        require(hasVoted(msg.sender), "Need an existing vote");
+        findVote(msg.sender).choice = _choice;
     }
 }
